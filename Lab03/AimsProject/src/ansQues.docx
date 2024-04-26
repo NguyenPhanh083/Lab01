@@ -1,0 +1,121 @@
+Ex 15: What happens if the object is not an instance of Media/Track?
+- The check obj == null || getClass() != obj.getClass() ensures that 
+if obj is not null, it must be of the same class as the current object.
+- If obj is not of the same class (e.g., passing a different object type),
+the getClass() != obj.getClass() condition will be true, and the method 
+will return false. This prevents unexpected behavior when comparing 
+objects of different types.
+
+
+Ex 16:
+* Observe what happens and explain in detail.
+The key takeaway here is polymorphism. The toString method is declared in 
+the Media class, but each subclass (CD, DVD, Book) likely overrides it to 
+provide specific information. When the toString method is called on a 
+Media object in the loop, the actual object's class determines which 
+toString method gets invoked, resulting in the appropriate media 
+information being printed.
+* Reading Assignment
+- What are the advantages of Polymorphism?
++ Code Reusability: Polymorphism allows you to write generic code that can
+work with different object types as long as they share a common base class
+or interface. This reduces code duplication and makes your code more 
+maintainable.
++ Flexibility: Polymorphic code can adapt to different situations at 
+runtime based on the actual object being used. This makes your code more 
+flexible and easier to extend with new functionality.
++ Loose Coupling: Polymorphism promotes loose coupling between objects. 
+You write code to interfaces or abstract classes, not specific 
+implementations. This makes your code more modular and easier to test and 
+change.
++ Improved Readability: Polymorphic code can be more readable as the 
+behavior is often expressed in a single method call, making the intent 
+clearer.
++ Reduced Errors: By using a single method with different implementations,
+you reduce the chances of errors introduced through duplicate code.
+
+- How is Inheritance useful to achieve Polymorphism in Java?
+Inheritance is a fundamental concept in object-oriented programming (OOP)
+that establishes an "is-a" relationship between classes. A subclass 
+(derived class) inherits the attributes and methods of its parent class 
+(base class). This inheritance hierarchy plays a crucial role in achieving 
+polymorphism:
++ Subclasses Override Methods: Subclasses can override methods inherited 
+from the parent class, providing their specific implementations. This 
+allows for specialized behavior while maintaining a common interface 
+through the parent class.
++ Runtime Binding (Dynamic Method Dispatch): When you call a method on an 
+object whose class is unknown at compile time (e.g., an object in a 
+polymorphic collection), Java uses dynamic method dispatch to determine 
+the correct method implementation to execute at runtime based on the 
+object's actual class. This ensures that the appropriate behavior is 
+applied for each object type.
+
+- What are the differences between Polymorphism and Inheritance in Java?
+Feature	            Polymorphism	        
+Definition	    Ability of objects to respond to a method call in 
+                different ways	
+Scope	        Can be achieved through inheritance, overloading, 
+                overriding	
+Focus	        Dynamic dispatch, treating objects of different types 
+                uniformly	
+
+Feature	        	Inheritance
+Definition  	Mechanism for creating new classes that reuse properties 
+                and behavior from existing classes
+Scope	        Used as a building block to achieve polymorphism
+Focus	        Code reuse, creating specialized object hierarchies
+
+
+Ex17:
+- What class should implement the Comparable interface?
+The Media class is a suitable candidate for implementing Comparable<Media>.
+- In those classes, how should you implement the compareTo()method to 
+reflect the ordering that we want?
+public class Media implements Comparable<Media> {
+
+    // ... other fields and methods
+
+    @Override
+    public int compareTo(Media otherMedia) {
+        // Ordering by title then cost (descending)
+        int titleComparison = getTitle().compareToIgnoreCase(otherMedia.getTitle());
+        if (titleComparison != 0) {
+            return titleComparison; // Titles differ, sort by title
+        }
+        return -Float.compare(getCost(), otherMedia.getCost()); // Sort by cost (descending)
+    }
+}
+- Can we have two ordering rules of the item (by title then cost and by 
+cost then title) if we use this Comparable interface approach?
+With Comparable, you can define a single compareTo method for these two 
+sorting rules.
+- Suppose the DVDs have a different ordering rule from the other media 
+types, that is by title, then decreasing length, then cost. How would 
+you modify your code to allow this?
+If DVDs have a special ordering rule (title, decreasing length, then cost), 
+I would need a separate class inheriting from Media:
+public class Dvd extends Media {
+    private int length;
+
+    // ... getters, setters, and other methods
+
+    @Override
+    public int compareTo(Media otherMedia) {
+        if (otherMedia instanceof Dvd) {
+            Dvd otherDvd = (Dvd) otherMedia;
+            int titleComparison = getTitle().compareToIgnoreCase(otherDvd.getTitle());
+            if (titleComparison != 0) {
+                return titleComparison; // Titles differ, sort by title
+            }
+            int lengthComparison = Integer.compare(otherDvd.getLength(), getLength()); // Descending length
+            if (lengthComparison != 0) {
+                return lengthComparison;
+            }
+            return -Float.compare(getCost(), otherDvd.getCost()); // Sort by cost (descending)
+        } else {
+            // Handle non-DVD comparison (use Media's default ordering or throw an exception)
+            return super.compareTo(otherMedia); // Fallback to Media's ordering
+        }
+    }
+}
