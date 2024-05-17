@@ -60,13 +60,18 @@ public class NumberGrid extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             String button = e.getActionCommand();
+            String currentText = tfDisplay.getText();
             if (button.charAt(0) >= '0' && button.charAt(0) <= '9') {
                 tfDisplay.setText(tfDisplay.getText() + button);
             } else if (button.equals("DEL")) {
-                // handles the "DEL" CASE
+                tfDisplay.setText(currentText.substring(0, currentText.length() - 1));
             } else {
-                // handles the "C" case
+                tfDisplay.setText("");
             }
         }
+    }
+
+    public static void main(String[] args) {
+        new NumberGrid();
     }
 }

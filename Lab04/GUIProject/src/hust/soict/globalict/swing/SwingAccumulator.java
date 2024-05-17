@@ -1,22 +1,21 @@
 package hust.soict.globalict.swing;
 
-import javax.annotation.processing.SupportedOptions;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import java.awt.Container;
-import java.awt.Frame;
+import javax.swing.JFrame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SwingAccumulator extends Frame {
+public class SwingAccumulator extends JFrame {
     private JTextField tfInput;
     private JTextField tfOutput;
     private int sum = 0;
 
     public SwingAccumulator() {
-        Container cp = getContentPane();
+        Container cp = this.getContentPane();
         cp.setLayout(new GridLayout(2, 2));
 
         cp.add(new JLabel("Enter an Integer: "));
@@ -35,11 +34,6 @@ public class SwingAccumulator extends Frame {
         setVisible(true);
     }
 
-    private Container getContentPane() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContentPane'");
-    }
-
     public static void main(String[] args) {
         new SwingAccumulator();
     }
@@ -47,7 +41,7 @@ public class SwingAccumulator extends Frame {
     private class TFInputListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent evt) {
-            int numberIn = Interger.parseInt(tfInput.getText());
+            int numberIn = Integer.parseInt(tfInput.getText());
             sum += numberIn;
             tfInput.setText("");
             tfOutput.setText(sum + "");
